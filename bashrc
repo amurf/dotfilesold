@@ -160,7 +160,12 @@ alias gundo='git reset HEAD^'
 alias gsr='git svn rebase'
 alias gsdc='git svn dcommit'
 
+source_if() {
+    if [ -f $1 ]; then
+        source $1
+    fi
+}
+
 # tidy this
-source ~/.git-completion.sh
-source ~/.uselect-rc
-source ~/perl5/perlbrew/etc/bashrc
+source_if ~/.git-completion
+source_if ~/perl5/perlbrew/etc/bashrc
