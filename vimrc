@@ -2,8 +2,8 @@ set nocompatible
 filetype off
 syntax on
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " Bundles:
 " Required
@@ -16,7 +16,8 @@ Bundle 'tpope/vim-surround'
 Bundle 'wting/rust.vim'
 Bundle 'L9'
 
-filetype plugin indent on     " required!
+call vundle#end()            " required
+filetype plugin indent on    " required
 
 autocmd ColorScheme * highlight TrailingWhitespace ctermbg=red guibg=red
 au InsertEnter * match TrailingWhitespace /\s\+\%#\@<!$/
