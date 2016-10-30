@@ -1,31 +1,39 @@
-set nocompatible
-filetype off
+set nocompatible               " be iMproved
+filetype off                   " required!
 syntax on
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
 
-" Bundles:
-" Required
+" let Vundle manage Vundle
+" required!
 Bundle 'gmarik/vundle'
-Bundle 'vim-perl/vim-perl'
+
+" My Bundles here:
+"
+" original repos on github
 Bundle 'altercation/vim-colors-solarized'
+Bundle 'vim-scripts/bufexplorer.zip'
 Bundle 'scrooloose/nerdtree'
+Bundle 'wting/rust.vim'
+Bundle 'vim-perl/vim-perl'
+Bundle 'pangloss/vim-javascript'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'tpope/vim-surround'
-Bundle 'wting/rust.vim'
+Bundle 'mileszs/ack.vim'
+Bundle 'wincent/command-t'
+Plugin 'jiangmiao/auto-pairs'
+
+" vim-scripts repos
 Bundle 'L9'
 
-call vundle#end()            " required
-filetype plugin indent on    " required
+filetype plugin indent on     " required!
 
 autocmd ColorScheme * highlight TrailingWhitespace ctermbg=red guibg=red
 au InsertEnter * match TrailingWhitespace /\s\+\%#\@<!$/
 au InsertLeave * match TrailingWhitespace /\s\+$/
 au BufWinEnter * match TrailingWhitespace /\s\+$/
 
-
-" Set syntax for filetypes
 au BufNewFile,BufRead *.rs set filetype=rust
 au BufNewFile,BufRead *.dart set filetype=dart
 au BufNewFile,BufRead *.psgi set filetype=perl
@@ -67,8 +75,10 @@ nmap <Leader>sq yss'
 " \dq : surround with double quotes
 nmap <Leader>dq yss"
 
+" NerdTREE next tab
+nnoremap <Leader>- :tabn<CR>
 
 let g:solarized_termtrans=1
-colorscheme solarized
 
+colorscheme solarized
 filetype on
