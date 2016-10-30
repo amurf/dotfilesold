@@ -1,8 +1,8 @@
-source ~/.git-completion.sh
+source ~/.git-completion
 alias fig=docker-compose
 export PERL_BADLANG="0"
 export PAGER=less
-export PATH=~/.cabal/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/Users/ash/bin:/sbin:/usr/X11/bin:/usr/local/share/npm/lib/node_modules/uglify-js/bin:~/.npm/less/1.3.3/package/bin:$(brew --prefix ruby)/bin:$PATH
+export PATH=/bin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin
 export EDITOR=/usr/bin/vim
 
 PS1='\[\033[1;31m\]\u@\h\[\033[1;31m\]:\[\033[00m\]\W\[\033[38;5;55m\]$(__git_ps1 " [%s] ")\[\033[1;31m\]\$ \[\033[00m\] '
@@ -237,7 +237,3 @@ alias grh='git reset --hard HEAD'
 alias gundo='git reset HEAD^'
 alias gsr='git svn rebase'
 alias gsdc='git svn dcommit'
-
-
-source ~/.uselect-rc
-source ~/perl5/perlbrew/etc/bashrc
