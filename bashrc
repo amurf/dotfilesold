@@ -1,15 +1,57 @@
-source ~/.git-completion
-alias fig=docker-compose
+source ~/.git-completion.sh
+source ~/perl5/perlbrew/etc/bashrc
+
+export ANDROID_HOME=/usr/local/opt/android-sdk
+export LANG="en_US.UTF-8"
 export PERL_BADLANG="0"
 export PAGER=less
-export PATH=/bin:/usr/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin
 export EDITOR=/usr/bin/vim
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:$PATH
+export SBT_OPTS=-XX:MaxPermSize=256M
+export NODE_PATH=/usr/local/lib/node_modules:$NODE_PATH
 
-PS1='\[\033[1;31m\]\u@\h\[\033[1;31m\]:\[\033[00m\]\W\[\033[38;5;55m\]$(__git_ps1 " [%s] ")\[\033[1;31m\]\$ \[\033[00m\] '
+PS1='\[\033[1;31m\]\u@\h\[\033[1;31m\]:\[\033[00m\]\w\[\033[38;5;55m\]$(__git_ps1 " [%s] ")\[\033[1;31m\]\$ \[\033[00m\] '
 
+alias fig=docker-compose
+alias ack=ag
+alias vue='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/vue-cli vue'
+alias node-run='docker run -it --rm -p 8080:8080 -v "$PWD:/node-run" amurf/node-run'
+alias docker-clean='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+alias fzf='fzf --no-mouse'
+
+
+# Setting ag as the default source for fzf
+export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# Ash Mode Enabled
+alias vim='echo Use vf or vo instead, fuzzyfinderers'
+alias vi='echo Use vf or vo instead, fuzzyfinderers'
+alias ireallyneedvim="/usr/bin/vim"
+alias bashrc="ireallyneedvim ~/.bashrc"
+
+vf() {
+    if [ ! -z "$1" ]; then
+        fileToOpen=$( fzf -q "$*" )
+        vim-if-defined $fileToOpen
+    else
+        fileToOpen=$( fzf )
+        vim-if-defined $fileToOpen
+    fi
+}
+
+vo() {
+    fileToOpen=$( fzf -select-1 -f "$*" )
+    vim-if-defined $fileToOpen
+}
+
+
+vim-if-defined() {
+    [[ ! -z "$1" ]] && /usr/bin/vim $1
+}
 
 spawn-postgres() {
-    docker run --network=arthritisbjmds_bjmds --name $1 -e POSTGRES_PASSWORD=password -d postgres
+    docker run --name $1 -e POSTGRES_PASSWORD=password -d postgres
 }
 
 link-to-postgres() {
