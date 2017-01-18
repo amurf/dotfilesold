@@ -2,32 +2,27 @@ set nocompatible               " be iMproved
 filetype off                   " required!
 syntax on
 
-set rtp+=~/.vim/bundle/Vundle.vim/
-call vundle#rc()
+call plug#begin('~/.vim/plugged')
 
-" let Vundle manage Vundle
-" required!
-Bundle 'gmarik/vundle'
+Plug 'vim-perl/vim-perl'
+Plug 'altercation/vim-colors-solarized'
+Plug 'vim-scripts/bufexplorer.zip'
+Plug 'scrooloose/nerdtree'
+Plug 'tpope/vim-surround'
+Plug 'guns/vim-clojure-static'
+Plug 'guns/vim-clojure-highlight'
+Plug 'posva/vim-vue'
+Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 
-" My Bundles here:
-"
-" original repos on github
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'vim-scripts/bufexplorer.zip'
-Bundle 'scrooloose/nerdtree'
-Bundle 'wting/rust.vim'
-Bundle 'vim-perl/vim-perl'
-Bundle 'pangloss/vim-javascript'
-Bundle 'derekwyatt/vim-scala'
-Bundle 'tpope/vim-surround'
-Bundle 'mileszs/ack.vim'
-Bundle 'wincent/command-t'
-Plugin 'jiangmiao/auto-pairs'
+call plug#end()
 
-" vim-scripts repos
-Bundle 'L9'
+" Setup vim with ag instead of find
+let $FZF_DEFAULT_COMMAND = 'ag -l -g ""'
 
-filetype plugin indent on     " required!
+" Open fzf in current window instead of new
+let g:fzf_layout = { 'window': 'enew' }
+
+filetype plugin indent on
 
 autocmd ColorScheme * highlight TrailingWhitespace ctermbg=red guibg=red
 au InsertEnter * match TrailingWhitespace /\s\+\%#\@<!$/
@@ -50,6 +45,12 @@ set tabstop=4 shiftwidth=4 expandtab shiftround smarttab
 set tabpagemax=666
 set confirm
 set errorfile=.vimerrors.err
+
+" \a : search files in current directory using fzf
+nnoremap <Leader>a :Ag<SPACE>
+
+" \f : search files in current directory using fzf
+nnoremap <Leader>f :Files<CR>
 
 " \tt : switch to tt2 syntax
 nnoremap <Leader>tt :set syntax=tt2<CR>
@@ -79,6 +80,5 @@ nmap <Leader>dq yss"
 nnoremap <Leader>- :tabn<CR>
 
 let g:solarized_termtrans=1
-
 colorscheme solarized
 filetype on
