@@ -1,8 +1,14 @@
-dotfiles
-========
+# dotfiles
 
 The dotfiles.
 
+## Installation
+
+```
+./install.sh
+```
+
+or just:
 
 ```
 
