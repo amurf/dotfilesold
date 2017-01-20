@@ -1,1 +1,1 @@
-fzf s3cmd tmux wget ag
+brew install fzf s3cmd tmux wget ag
