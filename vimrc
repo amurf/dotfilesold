@@ -46,11 +46,13 @@ set tabpagemax=666
 set confirm
 set errorfile=.vimerrors.err
 
+nmap <leader>i mzgg=G`z
+
 " \a : search files in current directory using fzf
 nnoremap <Leader>a :Ag<SPACE>
 
 " \f : search files in current directory using fzf
-nnoremap <Leader>f :Files<CR>
+nnoremap <Leader>f :FZF<CR>
 
 " \tt : switch to tt2 syntax
 nnoremap <Leader>tt :set syntax=tt2<CR>

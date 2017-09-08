@@ -17,6 +17,7 @@ alias ack=ag
 alias vue='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/vue-cli vue'
 alias node-run='docker run -it --rm -p 8080:8080 -v "$PWD:/node-run" amurf/node-run'
 alias docker-clean='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+alias surge='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/surge surge'
 alias fzf='fzf --no-mouse'
 
 
