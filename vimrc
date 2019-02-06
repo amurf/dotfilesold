@@ -12,6 +12,8 @@ Plug 'tpope/vim-surround'
 Plug 'guns/vim-clojure-static'
 Plug 'guns/vim-clojure-highlight'
 Plug 'posva/vim-vue'
+Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'othree/html5.vim'
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 
 call plug#end()
@@ -34,6 +36,13 @@ au BufNewFile,BufRead *.dart set filetype=dart
 au BufNewFile,BufRead *.psgi set filetype=perl
 au BufNewFile,BufRead *.scala set filetype=scala
 
+
+set tabstop=2 sts=2 shiftwidth=2 expandtab shiftround smarttab
+autocmd Filetype vue setlocal ts=2 sts=2 sw=2 expandtab smarttab
+autocmd Filetype javascript setlocal ts=2 sts=2 sw=2 expandtab smarttab
+autocmd Filetype html setlocal ts=2 sts=2 sw=2 expandtab smarttab
+autocmd Filetype perl setlocal ts=4 sts=4 sw=4 expandtab smarttab
+
 let loaded_matchparen=1
 
 set autoindent showmatch
@@ -41,10 +50,11 @@ set noincsearch nobackup nocindent hlsearch visualbell
 set indentexpr=""
 set formatoptions=""
 set scrolloff=3
-set tabstop=4 shiftwidth=4 expandtab shiftround smarttab
 set tabpagemax=666
 set confirm
 set errorfile=.vimerrors.err
+
+let g:user_emmet_leader_key='<C-l>'
 
 nmap <leader>i mzgg=G`z
 
@@ -52,7 +62,7 @@ nmap <leader>i mzgg=G`z
 nnoremap <Leader>a :Ag<SPACE>
 
 " \f : search files in current directory using fzf
-nnoremap <Leader>f :FZF<CR>
+nnoremap <Leader>f :Files<CR>
 
 " \tt : switch to tt2 syntax
 nnoremap <Leader>tt :set syntax=tt2<CR>

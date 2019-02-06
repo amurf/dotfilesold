@@ -1,3 +1,6 @@
+# 2tLyAbHursRSe3nNPPEu
+# QXmcr9UYQXLw
+
 source ~/.git-completion.sh
 source ~/perl5/perlbrew/etc/bashrc
 
@@ -6,7 +9,7 @@ export LANG="en_US.UTF-8"
 export PERL_BADLANG="0"
 export PAGER=less
 export EDITOR=/usr/bin/vim
-export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:$PATH
+export PATH=/usr/local/opt/ruby/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:$PATH
 export SBT_OPTS=-XX:MaxPermSize=256M
 export NODE_PATH=/usr/local/lib/node_modules:$NODE_PATH
 
@@ -14,10 +17,17 @@ PS1='\[\033[1;31m\]\u@\h\[\033[1;31m\]:\[\033[00m\]\w\[\033[38;5;55m\]$(__git_ps
 
 alias fig=docker-compose
 alias ack=ag
+alias create-perl-backend='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/create-perl-backend'
+alias jspm='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/jspm jspm'
 alias vue='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/vue-cli vue'
-alias node-run='docker run -it --rm -p 8080:8080 -v "$PWD:/node-run" amurf/node-run'
-alias docker-clean='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
 alias surge='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/surge surge'
+alias node-run='docker run -it --rm -p 8080:8080 -v "$PWD:/node-run" amurf/node-run'
+
+alias mix='docker run -it --rm  -v "$PWD:$PWD" -w "$PWD" elixir:alpine mix'
+alias rustc='docker run -it --rm  -v "$PWD:/source" jimmycuadra/rust rustc'
+alias cargo='docker run -it --rm  -v "$PWD:/source" jimmycuadra/rust cargo'
+
+alias docker-clean='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
 alias fzf='fzf --no-mouse'
 
 
@@ -132,7 +142,7 @@ map2boot2docker() {
 }
 
 in-stratperl() {
-    docker run -ti -v "$PWD:/home/svizra" docker.sdlocal.net/svizra/testing
+    docker run -ti -w "/tmp" -v "$PWD:/tmp" docker.sdlocal.net/devel/stratperlbase bash
 }
 
 maildev-stratperl() {
