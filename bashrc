@@ -1,8 +1,10 @@
 # 2tLyAbHursRSe3nNPPEu
 # QXmcr9UYQXLw
 
+# qr^CXC8B%rtK3#-
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 source ~/.git-completion.sh
-source ~/perl5/perlbrew/etc/bashrc
 
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export LANG="en_US.UTF-8"
@@ -10,16 +12,18 @@ export PERL_BADLANG="0"
 export PAGER=less
 export EDITOR=/usr/bin/vim
 export PATH=/usr/local/opt/ruby/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:$PATH
+export PERL5LIB=/usr/local/lib/perl5
+
+# :/Library/Developer/CommandLineTools/usr/bin:$PATH
 export SBT_OPTS=-XX:MaxPermSize=256M
 export NODE_PATH=/usr/local/lib/node_modules:$NODE_PATH
-
 PS1='\[\033[1;31m\]\u@\h\[\033[1;31m\]:\[\033[00m\]\w\[\033[38;5;55m\]$(__git_ps1 " [%s] ")\[\033[1;31m\]\$ \[\033[00m\] '
+PROMPT_DIRTRIM=3
 
 alias fig=docker-compose
 alias ack=ag
 alias create-perl-backend='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/create-perl-backend'
 alias jspm='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/jspm jspm'
-alias vue='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/vue-cli vue'
 alias surge='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/surge surge'
 alias node-run='docker run -it --rm -p 8080:8080 -v "$PWD:/node-run" amurf/node-run'
 
@@ -39,120 +43,131 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 alias vim='echo Use vf or vo instead, fuzzyfinderers'
 alias vi='echo Use vf or vo instead, fuzzyfinderers'
 alias ireallyneedvim="/usr/bin/vim"
+alias vimnotes='ireallyneedvim ~/.vimnotes'
 alias bashrc="ireallyneedvim ~/.bashrc"
+alias docker-restart="osascript -e 'quit app \"Docker\"' && open -a Docker"
+alias start-vnc="sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -restart -agent -privs -all"
+
+alias http="docker run --rm -v $PWD:/usr/share/nginx/html:ro -p 8000:80 -d nginx:alpine"
+
+fd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
+}
 
 vf() {
-    if [ ! -z "$1" ]; then
-        fileToOpen=$( fzf -q "$*" )
-        vim-if-defined $fileToOpen
-    else
-        fileToOpen=$( fzf )
-        vim-if-defined $fileToOpen
-    fi
+  if [ ! -z "$1" ]; then
+    fileToOpen=$( fzf -q "$*" )
+    vim-if-defined $fileToOpen
+  else
+    fileToOpen=$( fzf )
+    vim-if-defined $fileToOpen
+  fi
 }
 
 vo() {
-    fileToOpen=$( fzf -select-1 -f "$*" )
-    vim-if-defined $fileToOpen
+  fileToOpen=$( fzf -select-1 -f "$*" )
+  vim-if-defined $fileToOpen
 }
 
-
 vim-if-defined() {
-    [[ ! -z "$1" ]] && /usr/bin/vim $1
+  [[ ! -z "$1" ]] && /usr/bin/vim $1
 }
 
 spawn-postgres() {
-    docker run --name $1 -e POSTGRES_PASSWORD=password -d postgres
+  docker run --name $1 -e POSTGRES_PASSWORD=password -d postgres
 }
 
 link-to-postgres() {
-    docker run -ti --link $1:postgres \
-                   -e 'PGPORT=5432' \
-                   -e 'PGPASSWORD=password' \
-                   -e 'PGDATABASE=postgres' \
-                   -e 'PGUSER=postgres' \
-                   -e 'PGHOST=postgres' \
-                   -v "$PWD:/home/svizra" docker.sdlocal.net/svizra/testing
+docker run -ti --link $1:postgres \
+  -e 'PGPORT=5432' \
+  -e 'PGPASSWORD=password' \
+  -e 'PGDATABASE=postgres' \
+  -e 'PGUSER=postgres' \
+  -e 'PGHOST=postgres' \
+  -v "$PWD:/home/svizra" docker.sdlocal.net/svizra/testing
 }
 
 to-json() { perl -MJSON -e 'print encode_json({@ARGV})' "$@"; }
 
 include () {
-    [[ -f "$1" ]] && source "$1"
+  [[ -f "$1" ]] && source "$1"
 }
 
 go-lang() {
-    docker run --rm -it -v "$PWD:/run/src" amurf/$1-interactive
+docker run --rm -it -v "$PWD:/run/src" amurf/$1-interactive
 }
 
 ddigest() {
-    docker inspect --format "{{index (.RepoDigests) 0}}" $1
+  docker inspect --format "{{index (.RepoDigests) 0}}" $1
 }
 
 docker-perl6() {
-    docker run -it rakudo-star /bin/bash
+docker run -it rakudo-star /bin/bash
 }
 
 webval-start() {
-    docker run -it webval /bin/bash
+docker run -it webval /bin/bash
 }
 
 ws-tools() {
-    docker run --rm -it -v "$PWD:/survey" -e "PERL5LIB=/websurvey/lib" docker.sdlocal.net/websurvey/tools:testing
+docker run --rm -it -v "$PWD:/survey" -e "PERL5LIB=/websurvey/lib" docker.sdlocal.net/websurvey/tools:testing
 }
 
 docker-ssh() {
-    fig exec $1 /bin/bash
+fig exec $1 /bin/bash
 }
 
 env-file() {
-    export $(cat $1 | grep -v ^# | xargs)
+export $(cat $1 | grep -v ^# | xargs)
 }
 
 export DM=svizra
 
 dm() {
-    docker-machine "$@" $DM
+  docker-machine "$@" $DM
 }
 
 dmup() {
-    if ! dm status 2> /dev/null >/dev/null; then
-        dm create -d virtualbox
-    fi
-    dm start
-    eval $( dm env )
+  if ! dm status 2> /dev/null >/dev/null; then
+    dm create -d virtualbox
+  fi
+  dm start
+  eval $( dm env )
 }
 
 dmport() {
-    for port in "$@"; do
-        echo "Mapping port $port ..."
-        for proto in tcp udp; do
-            VBoxManage controlvm $DM natpf1 \
-                "$proto-port-$port,$proto,,$port,,$port"
-        done
+  for port in "$@"; do
+    echo "Mapping port $port ..."
+    for proto in tcp udp; do
+      VBoxManage controlvm $DM natpf1 \
+        "$proto-port-$port,$proto,,$port,,$port"
     done
+  done
 
-    VBoxManage showvminfo --machinereadable $DM \
-        | grep '^Forwarding.*-port-'
+  VBoxManage showvminfo --machinereadable $DM \
+    | grep '^Forwarding.*-port-'
 }
 
 map2boot2docker() {
-    port=$1;
-    boot2docker ssh -f -L \*:$port:localhost:$port -N;
+  port=$1;
+  boot2docker ssh -f -L \*:$port:localhost:$port -N;
 }
 
 in-stratperl() {
-    docker run -ti -w "/tmp" -v "$PWD:/tmp" docker.sdlocal.net/devel/stratperlbase bash
+docker run -ti -w "/tmp" -v "$PWD:/tmp" docker.sdlocal.net/devel/stratperlbase bash
 }
 
 maildev-stratperl() {
-    docker run -ti -v "$PWD:/home/svizra" --link 'maildev:maildev' docker.sdlocal.net/svizra/testing
+docker run -ti -v "$PWD:/home/svizra" --link 'maildev:maildev' docker.sdlocal.net/svizra/testing
 }
 
 fetchcuse() { curl -s http://developerexcuses.com/ | perl -ne '/center.*nofollow.*?>(.*?)<\/a>/ and print "$1\n"'; }
 
 ngoecp() {
-    cp $1.yaml ~/src/development/mhc-wa/ngoe/$1-outlet/sessions/
+  cp $1.yaml ~/src/development/mhc-wa/ngoe/$1-outlet/sessions/
 }
 
 uuid() { perl -MSD::RandomToken -E "for ( 1 .. ( '$@' || 10 ) ) { say SD::RandomToken->new }"; }
@@ -163,37 +178,37 @@ tmouse() { for i in resize-pane select-pane select-window; do tmux set mouse-$i 
 perlat() { for i in $@; do PATHSEP=: prepend_envvar_at PERL5LIB $i; done; }
 
 prepend_envvar() {
-    local envvar=$1
-    local pathsep=${PATHSEP:-:}
-    eval "local envval=\$(strip_envvar \$$envvar $2)"
-    if test -z $envval; then
-        eval "export $envvar=\"$2\""
-    else
-        eval "export $envvar=\"$2$pathsep$envval\""
-    fi
-    #eval "echo \$envvar=\$$envvar"
+  local envvar=$1
+  local pathsep=${PATHSEP:-:}
+  eval "local envval=\$(strip_envvar \$$envvar $2)"
+  if test -z $envval; then
+    eval "export $envvar=\"$2\""
+  else
+    eval "export $envvar=\"$2$pathsep$envval\""
+  fi
+  #eval "echo \$envvar=\$$envvar"
 }
 prepend_envvar_at() {
-    cd $2 || return
-    prepend_envvar_here $1
-    cd - >> /dev/null
+  cd $2 || return
+  prepend_envvar_here $1
+  cd - >> /dev/null
 }
 
 envvar_contains() {
-    local pathsep=${PATHSEP:-:}
-    eval "echo \$$1" | egrep -q "(^|$pathsep)$2($pathsep|\$)";
+  local pathsep=${PATHSEP:-:}
+  eval "echo \$$1" | egrep -q "(^|$pathsep)$2($pathsep|\$)";
 }
 
 strip_envvar() {
-    [ $# -gt 1 ] || return;
+  [ $# -gt 1 ] || return;
 
-    local pathsep=${PATHSEP:-:}
-    local haystack=$1
-    local needle=$2
-    echo $haystack | sed -e "s%^${needle}\$%%" \
-                   | sed -e "s%^${needle}${pathsep}%%" \
-                   | sed -e "s%${pathsep}${needle}\$%%" \
-                   | sed -e "s%${pathsep}${needle}${pathsep}%${pathsep}%"
+  local pathsep=${PATHSEP:-:}
+  local haystack=$1
+  local needle=$2
+  echo $haystack | sed -e "s%^${needle}\$%%" \
+    | sed -e "s%^${needle}${pathsep}%%" \
+    | sed -e "s%${pathsep}${needle}\$%%" \
+    | sed -e "s%${pathsep}${needle}${pathsep}%${pathsep}%"
 }
 
 
@@ -209,13 +224,13 @@ export PERL_CPANM_OPT="--sudo"
 ### Functions ###
 
 yamlxsdump() {
-perl -MData::Dumper::Concise -MYAML::XS -e \
-        'print qq("$_" =>\n), Dumper(YAML::XS::LoadFile($_)) for @ARGV' $@
+  perl -MData::Dumper::Concise -MYAML::XS -e \
+    'print qq("$_" =>\n), Dumper(YAML::XS::LoadFile($_)) for @ARGV' $@
 }
 
 yamldump() {
-perl -MData::Dumper::Concise -MYAML -e \
-        'print qq("$_" =>\n), Dumper(YAML::LoadFile($_)) for @ARGV' $@
+  perl -MData::Dumper::Concise -MYAML -e \
+    'print qq("$_" =>\n), Dumper(YAML::LoadFile($_)) for @ARGV' $@
 }
 
 
@@ -233,7 +248,6 @@ alias vi='vim'
 
 alias ssh="ssh -A"
 alias tmux_websurvey='tmuxinator start websurvey-setup'
-alias http="plackup -MPlack::App::Directory -e 'Plack::App::Directory->new({ root => \$ENV{PWD} })->to_app;'"
 alias footytips='ssh ashpe@173.231.53.150'
 alias homepc='ssh ashpe@203.132.88.127'
 alias ll='ls -l -G'
