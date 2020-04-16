@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 ./brew.install
 
@@ -13,5 +13,6 @@ cp -r bashrc ~/.bashrc
 cp -r tmux.conf ~/.tmux.conf
 cp -r gitconfig ~/.gitconfig
 cp -r vimrc ~/.vimrc
+cp -r inputrc ~/.inputrc
 
 source ~/.bashrc
