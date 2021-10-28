@@ -1,6 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =4
-let g:netrw_dirhist_1='/Users/ash/.cpanm'
-let g:netrw_dirhist_2='/Users/ash.new/.cpan'
-let g:netrw_dirhist_3='/Users/ash/src/stratdat/svizra/backend'
-let g:netrw_dirhist_4='/Users/ash/src/stratdat/svizra'
