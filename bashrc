@@ -4,7 +4,54 @@
 # qr^CXC8B%rtK3#-
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+envvar_contains() {
+  local pathsep=${PATHSEP:-:}
+  eval "echo \$$1" | egrep -q "(^|$pathsep)$2($pathsep|\$)";
+}
+
+strip_envvar() {
+  [ $# -gt 1 ] || return;
+
+  local pathsep=${PATHSEP:-:}
+  local haystack=$1
+  local needle=$2
+  echo $haystack | sed -e "s%^${needle}\$%%" \
+    | sed -e "s%^${needle}${pathsep}%%" \
+    | sed -e "s%${pathsep}${needle}\$%%" \
+    | sed -e "s%${pathsep}${needle}${pathsep}%${pathsep}%"
+}
+
+
+prepend_envvar_here() { prepend_envvar $1 $(pwd); }
+
+
+prepend_envvar() {
+  local envvar=$1
+  local pathsep=${PATHSEP:-:}
+  eval "local envval=\$(strip_envvar \$$envvar $2)"
+  if test -z $envval; then
+    eval "export $envvar=\"$2\""
+  else
+    eval "export $envvar=\"$2$pathsep$envval\""
+  fi
+  #eval "echo \$envvar=\$$envvar"
+}
+prepend_envvar_at() {
+  cd $2 || return
+  prepend_envvar_here $1
+  cd - >> /dev/null
+}
+
+perlat() { for i in $@; do PATHSEP=: prepend_envvar_at PERL5LIB $i; done; }
 source ~/.git-completion.sh
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+
+set -o vi
+bind '"jj":vi-movement-mode'
+
+
+export GITPERLLIB="/usr/local/opt/git/share/perl5:$(echo /usr/local/opt/subversion/lib/perl5/site_perl/*/darwin-thread-multi-2level):$(echo /usr/local/Cellar/git/*/share/perl5/)"
 
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export LANG="en_US.UTF-8"
@@ -14,11 +61,15 @@ export EDITOR=/usr/bin/vim
 export PATH=/usr/local/opt/ruby/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:$PATH
 export PERL5LIB=/usr/local/lib/perl5
 
+export PERL_LOCAL_LIB_ROOT="$HOME/perl5"
+export PERL_MB_OPT="--install_base $PERL_LOCAL_LIB_ROOT"
+export PERL_MM_OPT="INSTALL_BASE=$PERL_LOCAL_LIB_ROOT"
+perlat "$PERL_LOCAL_LIB_ROOT/lib/perl5" "$PERL_LOCAL_LIB_ROOT/lib/perl5/$ARCH"
+
 # :/Library/Developer/CommandLineTools/usr/bin:$PATH
 export SBT_OPTS=-XX:MaxPermSize=256M
 export NODE_PATH=/usr/local/lib/node_modules:$NODE_PATH
-PS1='\[\033[1;31m\]\u@\h\[\033[1;31m\]:\[\033[00m\]\w\[\033[38;5;55m\]$(__git_ps1 " [%s] ")\[\033[1;31m\]\$ \[\033[00m\] '
-PROMPT_DIRTRIM=3
+export PS1='\[\e[\033[01;34m\]\u@\h:\[\e[38;5;222m\]\W\[\e[\033[38;5;211m\]$( __git_ps1 )\[\e[\033[00m\]\n$ '
 
 alias fig=docker-compose
 alias ack=ag
@@ -175,45 +226,6 @@ uuid() { perl -MSD::RandomToken -E "for ( 1 .. ( '$@' || 10 ) ) { say SD::Random
 tt22() { perl -MTemplate -E 'Template->new->process(\*DATA, require $ARGV[0])' "$@" ; }
 tt() { perl -MTemplate -E "Template->new->process(\'$@', undef, \$out); say $out"; }
 tmouse() { for i in resize-pane select-pane select-window; do tmux set mouse-$i $1; done; }
-perlat() { for i in $@; do PATHSEP=: prepend_envvar_at PERL5LIB $i; done; }
-
-prepend_envvar() {
-  local envvar=$1
-  local pathsep=${PATHSEP:-:}
-  eval "local envval=\$(strip_envvar \$$envvar $2)"
-  if test -z $envval; then
-    eval "export $envvar=\"$2\""
-  else
-    eval "export $envvar=\"$2$pathsep$envval\""
-  fi
-  #eval "echo \$envvar=\$$envvar"
-}
-prepend_envvar_at() {
-  cd $2 || return
-  prepend_envvar_here $1
-  cd - >> /dev/null
-}
-
-envvar_contains() {
-  local pathsep=${PATHSEP:-:}
-  eval "echo \$$1" | egrep -q "(^|$pathsep)$2($pathsep|\$)";
-}
-
-strip_envvar() {
-  [ $# -gt 1 ] || return;
-
-  local pathsep=${PATHSEP:-:}
-  local haystack=$1
-  local needle=$2
-  echo $haystack | sed -e "s%^${needle}\$%%" \
-    | sed -e "s%^${needle}${pathsep}%%" \
-    | sed -e "s%${pathsep}${needle}\$%%" \
-    | sed -e "s%${pathsep}${needle}${pathsep}%${pathsep}%"
-}
-
-
-prepend_envvar_here() { prepend_envvar $1 $(pwd); }
-
 
 alias profile='source ~/.bashrc'
 
@@ -304,3 +316,4 @@ alias grh='git reset --hard HEAD'
 alias gundo='git reset HEAD^'
 alias gsr='git svn rebase'
 alias gsdc='git svn dcommit'
+alias git-merge-stash='git cherry-pick -n -m1 -Xtheirs stash'
