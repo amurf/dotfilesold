@@ -1,0 +1,14 @@
+{
+  "suggest.noselect": false,
+  "diagnostic.enable": false,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "markdown",
+    "javascript",
+    "vue",
+    "typescript",
+    "json"
+  ],
+  "emmet.includeLanguages": { "vue": "html" },
+  "vetur.ignoreProjectWarning": true
+}
