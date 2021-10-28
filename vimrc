@@ -17,14 +17,21 @@ Plug 'othree/html5.vim'
 Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'takac/vim-hardtime'
 Plug 'tpope/vim-commentary'
+Plug 'mattn/emmet-vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
+
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+
+let g:user_emmet_leader_key='<C-e>'
 
 " Setup vim with ag instead of find
 let $FZF_DEFAULT_COMMAND = 'ag -l -g ""'
 
 " Open fzf in current window instead of new
 let g:fzf_layout = { 'window': 'enew' }
+
 let g:hardtime_default_on = 1
 let g:list_of_disabled_keys = ['<UP>', '<DOWN>', '<LEFT>', '<RIGHT>']
 
@@ -42,7 +49,6 @@ au BufNewFile,BufRead *.vue set filetype=vue
 au BufNewFile,BufRead *.mjml set filetype=html
 
 set tabstop=2 sts=2 shiftwidth=2 expandtab shiftround smarttab
-
 autocmd Filetype perl setlocal ts=4 sts=4 sw=4 expandtab smarttab
 
 let loaded_matchparen=1
@@ -55,8 +61,6 @@ set scrolloff=3
 set tabpagemax=666
 set confirm
 set errorfile=.vimerrors.err
-
-let g:user_emmet_leader_key='<C-l>'
 
 inoremap jj <ESC>
 nmap <leader>i mzgg=G`z
@@ -100,15 +104,91 @@ nmap <Leader>sd cs'"<CR>
 " \sq : surround with single quotes
 nmap <Leader>sq yss'<CR>
 
-" \c : comment visualblock
-vnoremap <Leader>c :s/^/# /"<CR><CR>
-
 " \dq : surround with double quotes
 nmap <Leader>dq yss"<CR>
 
 " NerdTREE next tab
 nnoremap <Leader>- :tabn<CR>
 
+" Set internal encoding of vim, not needed on neovim, since coc.nvim using some
+" unicode characters in the file autoload/float.vim
+set encoding=utf-8
+
+" TextEdit might fail if hidden is not set.
+set hidden
+
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+
+" Give more space for displaying messages.
+set cmdheight=2
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+let g:coc_global_extensions = [
+      \ 'coc-tsserver',
+      \ 'coc-html',
+      \ 'coc-css',
+      \ 'coc-yaml',
+      \ 'coc-json',
+      \ 'coc-vimlsp',
+      \ 'coc-emmet',
+      \ 'coc-prettier',
+      \ 'coc-vetur',
+      \ ]
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("nvim-0.5.0") || has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+inoremap <expr> <Tab> pumvisible() ? coc#_select_confirm() : "<Tab>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+"
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+"
+"
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocAction('format')
+
+
 let g:solarized_termtrans=1
 colorscheme solarized
 filetype on
+
+
+
