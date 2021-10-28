@@ -14,7 +14,8 @@ Plug 'guns/vim-clojure-highlight'
 Plug 'posva/vim-vue'
 Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'othree/html5.vim'
-Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'takac/vim-hardtime'
 Plug 'tpope/vim-commentary'
 Plug 'mattn/emmet-vim'
