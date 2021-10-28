@@ -43,9 +43,7 @@ prepend_envvar_at() {
 }
 
 perlat() { for i in $@; do PATHSEP=: prepend_envvar_at PERL5LIB $i; done; }
-source ~/.git-completion.sh
-source "$HOME/.sdkman/bin/sdkman-init.sh"
-
+source ~/.git-completion
 
 set -o vi
 bind '"jj":vi-movement-mode'
