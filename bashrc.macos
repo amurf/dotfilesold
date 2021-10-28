@@ -1,0 +1,10 @@
+source ~/.bashrc.linux
+
+export BASH_SILENCE_DEPRECATION_WARNING=1
+export GITPERLLIB="/usr/local/opt/git/share/perl5:$(echo /usr/local/opt/subversion/lib/perl5/site_perl/*/darwin-thread-multi-2level):$(echo /usr/local/Cellar/git/*/share/perl5/)"
+export PATH=/usr/local/opt/ruby/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:$PATH
+export PERL_LOCAL_LIB_ROOT="$HOME/perl5"
+export PERL_MB_OPT="--install_base $PERL_LOCAL_LIB_ROOT"
+export PERL_MM_OPT="INSTALL_BASE=$PERL_LOCAL_LIB_ROOT"
+perlat "$PERL_LOCAL_LIB_ROOT/lib/perl5" "$PERL_LOCAL_LIB_ROOT/lib/perl5/$ARCH"
+export NODE_PATH=/usr/local/lib/node_modules:$NODE_PATH

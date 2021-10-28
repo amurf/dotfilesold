@@ -1,8 +1,4 @@
-# 2tLyAbHursRSe3nNPPEu
-# QXmcr9UYQXLw
-
-# qr^CXC8B%rtK3#-
-export BASH_SILENCE_DEPRECATION_WARNING=1
+source ~/.git-completion
 
 envvar_contains() {
   local pathsep=${PATHSEP:-:}
@@ -24,7 +20,6 @@ strip_envvar() {
 
 prepend_envvar_here() { prepend_envvar $1 $(pwd); }
 
-
 prepend_envvar() {
   local envvar=$1
   local pathsep=${PATHSEP:-:}
@@ -36,6 +31,7 @@ prepend_envvar() {
   fi
   #eval "echo \$envvar=\$$envvar"
 }
+
 prepend_envvar_at() {
   cd $2 || return
   prepend_envvar_here $1
@@ -43,30 +39,14 @@ prepend_envvar_at() {
 }
 
 perlat() { for i in $@; do PATHSEP=: prepend_envvar_at PERL5LIB $i; done; }
-source ~/.git-completion
 
 set -o vi
 bind '"jj":vi-movement-mode'
 
 
-export GITPERLLIB="/usr/local/opt/git/share/perl5:$(echo /usr/local/opt/subversion/lib/perl5/site_perl/*/darwin-thread-multi-2level):$(echo /usr/local/Cellar/git/*/share/perl5/)"
-
-export ANDROID_HOME=/usr/local/opt/android-sdk
-export LANG="en_US.UTF-8"
-export PERL_BADLANG="0"
 export PAGER=less
 export EDITOR=/usr/bin/vim
-export PATH=/usr/local/opt/ruby/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:$PATH
-export PERL5LIB=/usr/local/lib/perl5
 
-export PERL_LOCAL_LIB_ROOT="$HOME/perl5"
-export PERL_MB_OPT="--install_base $PERL_LOCAL_LIB_ROOT"
-export PERL_MM_OPT="INSTALL_BASE=$PERL_LOCAL_LIB_ROOT"
-perlat "$PERL_LOCAL_LIB_ROOT/lib/perl5" "$PERL_LOCAL_LIB_ROOT/lib/perl5/$ARCH"
-
-# :/Library/Developer/CommandLineTools/usr/bin:$PATH
-export SBT_OPTS=-XX:MaxPermSize=256M
-export NODE_PATH=/usr/local/lib/node_modules:$NODE_PATH
 export PS1='\[\e[\033[01;34m\]\u@\h:\[\e[38;5;222m\]\W\[\e[\033[38;5;211m\]$( __git_ps1 )\[\e[\033[00m\]\n$ '
 
 alias fig=docker-compose
@@ -75,14 +55,11 @@ alias create-perl-backend='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/cr
 alias jspm='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/jspm jspm'
 alias surge='docker run -it --rm -v "$PWD:$PWD" -w "$PWD" amurf/surge surge'
 alias node-run='docker run -it --rm -p 8080:8080 -v "$PWD:/node-run" amurf/node-run'
-
 alias mix='docker run -it --rm  -v "$PWD:$PWD" -w "$PWD" elixir:alpine mix'
 alias rustc='docker run -it --rm  -v "$PWD:/source" jimmycuadra/rust rustc'
 alias cargo='docker run -it --rm  -v "$PWD:/source" jimmycuadra/rust cargo'
-
 alias docker-clean='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
 alias fzf='fzf --no-mouse'
-
 
 # Setting ag as the default source for fzf
 export FZF_DEFAULT_COMMAND='ag -g ""'
@@ -125,20 +102,6 @@ vim-if-defined() {
   [[ ! -z "$1" ]] && /usr/bin/vim $1
 }
 
-spawn-postgres() {
-  docker run --name $1 -e POSTGRES_PASSWORD=password -d postgres
-}
-
-link-to-postgres() {
-docker run -ti --link $1:postgres \
-  -e 'PGPORT=5432' \
-  -e 'PGPASSWORD=password' \
-  -e 'PGDATABASE=postgres' \
-  -e 'PGUSER=postgres' \
-  -e 'PGHOST=postgres' \
-  -v "$PWD:/home/svizra" docker.sdlocal.net/svizra/testing
-}
-
 to-json() { perl -MJSON -e 'print encode_json({@ARGV})' "$@"; }
 
 include () {
@@ -146,90 +109,24 @@ include () {
 }
 
 go-lang() {
-docker run --rm -it -v "$PWD:/run/src" amurf/$1-interactive
+  docker run --rm -it -v "$PWD:/run/src" amurf/$1-interactive
 }
 
 ddigest() {
   docker inspect --format "{{index (.RepoDigests) 0}}" $1
 }
 
-docker-perl6() {
-docker run -it rakudo-star /bin/bash
-}
-
-webval-start() {
-docker run -it webval /bin/bash
-}
-
-ws-tools() {
-docker run --rm -it -v "$PWD:/survey" -e "PERL5LIB=/websurvey/lib" docker.sdlocal.net/websurvey/tools:testing
-}
-
-docker-ssh() {
-fig exec $1 /bin/bash
-}
-
 env-file() {
-export $(cat $1 | grep -v ^# | xargs)
-}
-
-export DM=svizra
-
-dm() {
-  docker-machine "$@" $DM
-}
-
-dmup() {
-  if ! dm status 2> /dev/null >/dev/null; then
-    dm create -d virtualbox
-  fi
-  dm start
-  eval $( dm env )
-}
-
-dmport() {
-  for port in "$@"; do
-    echo "Mapping port $port ..."
-    for proto in tcp udp; do
-      VBoxManage controlvm $DM natpf1 \
-        "$proto-port-$port,$proto,,$port,,$port"
-    done
-  done
-
-  VBoxManage showvminfo --machinereadable $DM \
-    | grep '^Forwarding.*-port-'
-}
-
-map2boot2docker() {
-  port=$1;
-  boot2docker ssh -f -L \*:$port:localhost:$port -N;
-}
-
-in-stratperl() {
-docker run -ti -w "/tmp" -v "$PWD:/tmp" docker.sdlocal.net/devel/stratperlbase bash
-}
-
-maildev-stratperl() {
-docker run -ti -v "$PWD:/home/svizra" --link 'maildev:maildev' docker.sdlocal.net/svizra/testing
+  export $(cat $1 | grep -v ^# | xargs)
 }
 
 fetchcuse() { curl -s http://developerexcuses.com/ | perl -ne '/center.*nofollow.*?>(.*?)<\/a>/ and print "$1\n"'; }
-
-ngoecp() {
-  cp $1.yaml ~/src/development/mhc-wa/ngoe/$1-outlet/sessions/
-}
-
-uuid() { perl -MSD::RandomToken -E "for ( 1 .. ( '$@' || 10 ) ) { say SD::RandomToken->new }"; }
 
 tt22() { perl -MTemplate -E 'Template->new->process(\*DATA, require $ARGV[0])' "$@" ; }
 tt() { perl -MTemplate -E "Template->new->process(\'$@', undef, \$out); say $out"; }
 tmouse() { for i in resize-pane select-pane select-window; do tmux set mouse-$i $1; done; }
 
 alias profile='source ~/.bashrc'
-
-export PKG_CONFIG_PATH=~/src/game/protocol_buffers/
-export HISTIGNORE="&:[bf]g:exit"
-export PERL_CPANM_OPT="--sudo"
 
 ### Functions ###
 
@@ -257,9 +154,6 @@ alias vi='vim'
 
 
 alias ssh="ssh -A"
-alias tmux_websurvey='tmuxinator start websurvey-setup'
-alias footytips='ssh ashpe@173.231.53.150'
-alias homepc='ssh ashpe@203.132.88.127'
 alias ll='ls -l -G'
 alias ls='ls -G'
 alias la='ls -la -G'
